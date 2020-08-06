@@ -19,3 +19,39 @@ def empty(self)   方法    判断是否为空队列，队列为空返回True，
 def full(self)     方法    判断对列是否已满，队列满时返回True，否则返回False
 def join(self)    方法     强制等待队列为空再执行后续操作
 """
+import threading, time, queue					# 导入线程实现模块
+class Message: 						# 消息保存类
+    def __init__(self):    					# 构造方法
+        self.__title = None     				# 初始化属性
+        self.__content = None   				# 初始化属性
+    def set_info(self, title, content): 				# 设置属性
+        self.__title = title     				# 设置数据
+        time.sleep(0.1)    					# 模拟操作延迟
+        self.__content = content   				# 设置数据
+        print("【%s】title = %s、content = %s" % (threading.current_thread().name,
+                self.__title, self.__content)) 			# 信息输出
+    def __str__(self):   					# 获取对象信息
+        time.sleep(1)  					# 模拟操作延迟
+        return "〖%s〗title = %s、content = %s" % (threading.current_thread().name,
+                self.__title, self.__content) 			# 数据返回
+def producer_handle(queue):   					# 生产者线程处理函数
+    for num in range(50): 					# 生产50次数据
+        message = Message()					# 创建消息对象
+        if num % 2 == 0:    					# 交替生产
+            message.set_info("李兴华", "软件技术讲师")  		# 生产数据一
+        else: 						# 条件不满足
+            message.set_info("yootk", "www.yootk.com") 		# 生产数据二
+        queue.put(message)  					# 追加队列
+def consumer_handle(queue):  					# 消费者线程处理函数
+    for num in range(50):  					# 消费50次数据
+        print(queue.get())					# 通过队列获取数据
+def main():						# 主函数
+    work_queue = queue.Queue(5)  				# 创建操作队列
+    producer_thread = threading.Thread(target=producer_handle, name="生产者线程", args=(work_queue,))
+    consumer_thread = threading.Thread(target=consumer_handle, name="消费者线程", args=(work_queue,))
+    producer_thread.start()   					# 启动生产者线程
+    consumer_thread.start()					# 启动消费者线程
+if __name__ == "__main__":					# 判断程序执行名称
+    main()
+
+
