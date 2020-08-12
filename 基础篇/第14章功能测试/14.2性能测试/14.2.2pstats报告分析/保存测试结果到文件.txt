@@ -1,0 +1,32 @@
+"""
+在使用cProfile模块进行性能测试时，除了可以直接观察到测试结果的测试程序，还有些程序的性能测试需要花费较长的时间，这时就可以
+考虑将测试结果保存在一个统计文件中
+
+实例：保存测试结果到文件
+if __name__ == "__main__" : 					# 判断程序执行名称
+    cProfile.run("accumulation(109999990)", "yootk.result")		# 调用cProfile测试方法
+这样当程序执行完毕后形成一个yootk.result的二进制文件，而要想执行此二进制文件，就可以使用pstats模块进行分析
+
+实例：使用pstats模块分析
+# coding : UTF-8
+import pstats				# 模块导入
+if __name__ == "__main__":			# 判断程序执行名称
+    stats = pstats.Stats("yootk.result") 	# 加载分析文件
+    stats.sort_stats("time") 			# 结果排序
+    stats.print_stats()			# 打印统计报告
+此时程序自动加载了yootk.result的二进制统计文件，同时为了方便阅读，又对数据进行了排序显示
+
+
+提示：不编写统计程序
+本程序在统计时期明确定义了一个Python程序文件，但是如果开发者不希望按照此形式进行，则也可以通过Python命令进行性能测试，
+假设程序保存在了yootk_math.py模块中
+
+实例：生成性能测试统计文件
+python -m cProfile -o yootk.result yootk_math.py
+参数作用：-m 表示要导入的模块，-o表示保存统计结果文件名称
+
+实例：使用pstats显示统计结果
+python -c "import pstats; p=pstats.Stats('yootk.result'); p.sort_stats('time').print_stats()"
+参数作用：-c表示定义程序执行代码
+
+"""

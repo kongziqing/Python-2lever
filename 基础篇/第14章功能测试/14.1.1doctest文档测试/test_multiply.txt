@@ -1,0 +1,5 @@
+>>> from yootk_util import multiply
+>>> multiply(5, 6)
+30
+>>> multiply("yootk,", 3)
+'yootk,yootk,yootk,'
